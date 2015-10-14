@@ -152,6 +152,15 @@ public class ArbolAVL <T extends Comparable<T>>{
          actualizarFE(borrar);
      }
      
+public void elimina(T elem){
+
+  if(busca(elem)==null)
+    return null;
+  else{
+    NodoArbolAVL nuevo=busca(elem);
+    NodoArbolAVL raíz=elimina(nuevo,raíz);
+}
+}
      public void balancear(NodoArbolAVL<T> actual){
      }
 
