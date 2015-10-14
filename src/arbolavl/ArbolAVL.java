@@ -125,6 +125,7 @@ public class ArbolAVL <T extends Comparable<T>>{
          }
          
      }
+     
      public NodoArbolAVL<T> elimina(NodoArbolAVL<T> borrar, NodoArbolAVL<T> raiz){
          if(borrar.dato.compareTo((T)raiz.dato)<0)
              elimina(borrar,raiz.hijoIzquierdo);
@@ -144,26 +145,72 @@ public class ArbolAVL <T extends Comparable<T>>{
                  borrar.hijoIzquierdo=null;
              }
              else{//tiene ambos hijos
-                 borrar.dato=eliminaMin(borrar.hijoDerecho);
+                 borrar.dato=(T)eliminaMin(borrar.hijoDerecho);
              }
                           
          }
          balancear(borrar);
          actualizarFE(borrar);
+      return null;
      }
      
 public void elimina(T elem){
-
-  if(busca(elem)==null)
-    return null;
+NodoArbolAVL<T> actual=null;
+  if(buscar(elem,raiz)==null)
+    System.out.println("ElementNotFoundExcpetion");
   else{
-    NodoArbolAVL nuevo=busca(elem);
-    NodoArbolAVL raíz=elimina(nuevo,raíz);
+    NodoArbolAVL<T> nuevo=buscar(elem,raiz);
+    actual=elimina(nuevo,raiz);
 }
+      
 }
-     public void balancear(NodoArbolAVL<T> actual){
+
+private T eliminaMin(NodoArbolAVL<T> actual){
+    T aux = null;
+    if(actual.hijoDerecho==null && actual.hijoIzquierdo==null)//nodo no hijos 
+        return null;
+    else{
+        if(actual.hijoIzquierdo!=null){//tiene hijo izq
+            aux=(T)eliminaMin(actual.hijoIzquierdo);
+            balancear(actual);
+            actualizarFE(actual);
+            return aux;
+        }else{
+            actual=actual.hijoDerecho;
+            actual.hijoDerecho=null;
+            actual.hijoIzquierdo=null;
+            balancear(actual);
+            actualizarFE(actual);
+            return aux;
+        }
+    }
+}
+     private void balancear(NodoArbolAVL<T> actual){
+         if(actual.hijoIzquierdo!=null && actual.hijoDerecho!=null){
+             if((obtenerFE(actual.hijoIzquierdo))-obtenerFE(actual.hijoDerecho)==2){
+                    if(obtenerFE(actual.hijoIzquierdo.hijoIzquierdo)>=obtenerFE(actual.hijoIzquierdo.hijoDerecho))
+                        rotacionIzquierda(actual);
+                    else
+                        rotacionDobleIzquierda(actual);
+             }else if(obtenerFE(actual.hijoDerecho)-obtenerFE(actual.hijoIzquierdo)==2){
+                 if(obtenerFE(actual.hijoDerecho.hijoDerecho)>=obtenerFE(actual.hijoDerecho.hijoIzquierdo))
+                     rotacionDerecha(actual);
+                 else
+                     rotacionDobleDerecha(actual);
+             }
+         }
      }
 
+    private void actualizarFE(NodoArbolAVL<T> actual) {
+         //actualizar la altura
+         if(actual.hijoIzquierdo==null && actual.hijoDerecho!=null){//no hijo izq si der
+             actual.fe=actual.hijoDerecho.fe+1;
+         }else if((actual.hijoDerecho==null) && (actual.hijoIzquierdo!=null)){//no hijo der si hijo izq
+             actual.fe=actual.hijoIzquierdo.fe+1;
+         }else{
+             actual.fe=Math.max(obtenerFE(actual.hijoIzquierdo), obtenerFE(actual.hijoDerecho))+1;//ambos hijos
+         }
+    }
     
      //recorridos
      public void inOrden(NodoArbolAVL r){
@@ -174,36 +221,41 @@ public void elimina(T elem){
          }
      }
      public void preOrden(NodoArbolAVL r){
+         StringBuilder sb=new StringBuilder();
+         int val = 0;
          if(r!=null){
-             System.out.print(r.dato +", ");
+             val = Math.subtractExact(obtenerFE(r.hijoDerecho),obtenerFE(r.hijoIzquierdo));
+              sb.append("Elemento: "+r.dato+" ");
+              sb.append("Fe: "+val);
+              System.out.println( sb.toString());
+                                         
              preOrden(r.hijoIzquierdo);
              preOrden(r.hijoDerecho);
          }
      }
-    public void postOrden(NodoArbolAVL r){
-         if(r!=null){
-             
-             preOrden(r.hijoIzquierdo);
-             preOrden(r.hijoDerecho);
-             System.out.print(r.dato +", ");
-         }
-     }
+    
+  
     
     
   public static void main(String[] args){
-      ArbolAVL arbol=new ArbolAVL();
+      ArbolAVL<Integer> arbol=new ArbolAVL<Integer>();
       //insertar
       arbol.insertar(10);
       arbol.insertar(5);
       arbol.insertar(13);
       arbol.insertar(1);
       arbol.insertar(6);
+      arbol.insertar(16);
       arbol.insertar(17);
+      arbol.insertar(4);
+      arbol.elimina(10);
       arbol.preOrden(arbol.obtenerRaiz());
       
+      
   }  
+
     
 }
 //http://ingsistemas.ufps.edu.co/SEED/arbolavl.html    simulador AVL descargar dist/.jar
     
-}
+

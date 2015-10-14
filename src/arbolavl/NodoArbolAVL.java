@@ -12,11 +12,12 @@ package arbolavl;
  */
 public class NodoArbolAVL<T extends Comparable<T>> {
    T dato;
-   int fe;
+   int fe, nivel;
     NodoArbolAVL hijoIzquierdo,hijoDerecho;
     
     NodoArbolAVL(T d){
         this.dato=d;
+        this.nivel=0;
         this.fe=0;
         this.hijoIzquierdo=null;
         this.hijoDerecho=null;
@@ -24,7 +25,7 @@ public class NodoArbolAVL<T extends Comparable<T>> {
     public int compareTo(NodoArbolAVL otro){
         return this.dato.compareTo((T)otro.dato);
     }
-    
+   
     
     
     
